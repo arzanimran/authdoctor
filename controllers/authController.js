@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt");//used to hash passwords before saving them in the database
 const jwt = require("jsonwebtoken");
 
 const SECRET = process.env.JWT_SECRET; // JWT secret

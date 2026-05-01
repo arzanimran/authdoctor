@@ -1,10 +1,10 @@
 // generate time slots based on start, end, duration
 
 function generateSlots(startTime, endTime, duration) {
-  const slots = [];
+  const slots = []; //This stores all slot times.
 
   // split time
-  let [startHour, startMin] = startTime.split(":").map(Number);
+  let [startHour, startMin] = startTime.split(":").map(Number);//
   let [endHour, endMin] = endTime.split(":").map(Number);
 
   let start = new Date();
@@ -18,9 +18,9 @@ function generateSlots(startTime, endTime, duration) {
     const time =
       String(start.getHours()).padStart(2, "0") +  // padStart look like in two digit only
       ":" +
-      String(start.getMinutes()).padStart(2, "0");
+      String(start.getMinutes()).padStart(2, "0");  
 
-    slots.push(time);
+    slots.push(time);            
 
     // move to next slot
     start.setMinutes(start.getMinutes() + duration);   // move to next slot by adding duration

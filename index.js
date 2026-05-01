@@ -18,6 +18,9 @@ app.use("/doctor", require("./routes/doctorRoutes"));
 // availability routes
 app.use("/availability", require("./routes/availabilityRoutes"));
 
+// appointment routes
+app.use("/appointment", require("./routes/appointmentRoutes"));
+
 // MongoDB connection
 mongoose
   .connect(process.env.MONGO_URL)
@@ -42,6 +45,7 @@ http://localhost:3000/auth/register
   "password": "123456",
   "role": "patient"
 }
+
 */
 
 
@@ -96,5 +100,38 @@ GET
 http://localhost:3000/availability/69f22e3a0939c2872bf58e0f/2026-04-30
 
 {"doctor":"Dr Smith","date":"2026-04-30","totalSlots":2,"bookedSlots":0,"availableSlots":["09:00","09:30"]}
+
+*/
+
+/*
+POST
+BOOK APPOINTMENT
+http://localhost:3000/appointment/69f22e3a0939c2872bf58e0f
+{
+  "patientName": "Arzan",
+  "patientPhone": "9876543210",
+  "reason": "Fever"
+}
+
+*/
+
+
+
+
+/*
+
+Register
+   ↓
+Login
+   ↓
+Create Doctor
+   ↓
+Get Doctor
+   ↓
+Check Availability
+   ↓
+Book Appointment
+   ↓
+Cancel Appointment
 
 */
