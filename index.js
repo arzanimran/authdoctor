@@ -196,7 +196,6 @@ shown
 GET DOCTOR BY ID
 GET
 https://authdoctor.onrender.com/doctor/69f9f18935fba92e74cbf550
-{"_id":"69f9f18935fba92e74cbf550","name":"Dr heeba","specialization":"Dermatology","availableDays":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"startTime":"09:00","endTime":"10:00","slotDuration":30,"__v":0}
 
 
 */
