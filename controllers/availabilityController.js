@@ -1,4 +1,4 @@
-const Doctor = require("../models/Doctor");
+/*const Doctor = require("../models/Doctor");
 const Appointment = require("../models/Appointment");
 const generateSlots = require("../utils/slotGenerator");
 
@@ -44,5 +44,71 @@ exports.getAvailableSlots = async (req, res) => { //this function will handle AP
     });
   } catch (err) {
     res.json({ error: err.message });
+  }
+};
+*/
+
+
+const Doctor = require("../models/Doctor");
+const Appointment = require("../models/Appointment");
+const generateSlots = require("../utils/slotGenerator");
+
+// get available slots for doctor
+exports.getAvailableSlots = async (req, res) => {
+  try {
+
+    const { doctorId, date } = req.params;
+
+    // find doctor
+    const doctor = await Doctor.findById(doctorId);
+
+    if (!doctor) {
+      return res.json({
+        message: "Doctor not found",
+      });
+    }
+
+    // generate all slots
+    const allSlots = generateSlots(
+      doctor.startTime,
+      doctor.endTime,
+      doctor.slotDuration
+    );
+
+    // get booked appointments
+    const bookedAppointments = await Appointment.find({
+      doctorId,
+      date,
+      status: "Booked",
+    });
+
+    // prepare slot data
+    const slots = allSlots.map((slot) => {
+
+      // count booked patients in this slot
+      const bookedCount = bookedAppointments.filter(
+        (appointment) => appointment.slot === slot
+      ).length;
+
+      return {
+        slot,
+        capacity: doctor.slotCapacity,
+        booked: bookedCount,
+        remaining: doctor.slotCapacity - bookedCount,
+        full: bookedCount >= doctor.slotCapacity,
+      };
+    });
+
+    res.json({
+      doctor: doctor.name,
+      specialization: doctor.specialization,
+      date,
+      slots,
+    });
+
+  } catch (err) {
+    res.json({
+      error: err.message,
+    });
   }
 };

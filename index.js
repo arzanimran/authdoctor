@@ -28,8 +28,10 @@ mongoose
   .catch((err) => console.log(err));
 
 // server start
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 
@@ -72,15 +74,24 @@ POST http://localhost:3000/doctor
   "name": "Dr Smith",
   "specialization": "Cardiology",
   "startTime": "09:00",
-  "endTime": "17:00",
-  "slotDuration": 30
+  "endTime": "10:00",
+  "slotDuration": 30,
+  "slotCapacity": 4
 }
+
+| Time          | Meaning                 |
+| ------------- | ----------------------- |
+| 09:00 → 10:00 | working hours           |
+| 30            | every slot is 30 mins   |
+| 4             | max 4 patients per slot |
+
 
 */
 
 /*
 GET ALL DOCTORS
-GET http://localhost:3000/doctor
+GET 
+http://localhost:3000/doctor
 
 [{"_id":"69f22e3a0939c2872bf58e0f","name":"Dr Smith","specialization":"Cardiology","availableDays":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"weeklyOff":["Sunday"],"startTime":"09:00","endTime":"10:00","slotDuration":30,"__v":0},{"_id":"69f22e4d0939c2872bf58e10","name":"Dr Smith","specialization":"Cardiology","availableDays":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"weeklyOff":["Sunday"],"startTime":"09:00","endTime":"10:00","slotDuration":30,"__v":0},{"_id":"69f22e4e0939c2872bf58e11","name":"Dr Smith","specialization":"Cardiology","availableDays":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"weeklyOff":["Sunday"],"startTime":"09:00","endTime":"10:00","slotDuration":30,"__v":0},{"_id":"69f22ef40939c2872bf58e14","name":"Dr Smith","specialization":"Cardiology","availableDays":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"weeklyOff":["Sunday"],"startTime":"09:00","endTime":"10:00","slotDuration":30,"__v":0},{"_id":"69f2f664bfee220f397a653d","name":"Dr Smith","specialization":"Cardiology","availableDays":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"startTime":"09:00","endTime":"17:00","slotDuration":30,"__v":0}]
 
@@ -103,6 +114,7 @@ http://localhost:3000/availability/69f22e3a0939c2872bf58e0f/2026-04-30
 
 */
 
+
 /*
 POST
 BOOK APPOINTMENT
@@ -114,6 +126,7 @@ http://localhost:3000/appointment/69f22e3a0939c2872bf58e0f
 }
 
 */
+
 
 
 
@@ -133,5 +146,57 @@ Check Availability
 Book Appointment
    ↓
 Cancel Appointment
+
+*/
+
+
+
+// deployed on render.com
+
+/*
+POST
+https://authdoctor.onrender.com/auth/register
+{
+  "name": "imran",
+  "email": "test123@gmail.com",
+  "password": "123456"
+}
+
+
+LOGIN
+POST
+https://authdoctor.onrender.com/auth/login
+
+{
+  "email": "test123@gmail.com",
+  "password": "123456"
+}
+
+
+create doctor
+POST
+https://authdoctor.onrender.com/doctor
+
+{
+  "name": "Dr heeba",
+  "specialization": "Dermatology",
+  "startTime": "09:00",
+  "endTime": "10:00",
+  "slotDuration": 30,
+  "slotCapacity": 4
+}
+
+GET ALL DOCTORS
+GET
+https://authdoctor.onrender.com/doctor
+
+shown
+[{"_id":"69f9f18935fba92e74cbf550","name":"Dr heeba","specialization":"Dermatology","availableDays":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"startTime":"09:00","endTime":"10:00","slotDuration":30,"__v":0}]
+
+GET DOCTOR BY ID
+GET
+https://authdoctor.onrender.com/doctor/69f9f18935fba92e74cbf550
+{"_id":"69f9f18935fba92e74cbf550","name":"Dr heeba","specialization":"Dermatology","availableDays":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"startTime":"09:00","endTime":"10:00","slotDuration":30,"__v":0}
+
 
 */
