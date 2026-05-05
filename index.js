@@ -28,8 +28,10 @@ mongoose
   .catch((err) => console.log(err));
 
 // server start
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 
@@ -112,6 +114,7 @@ http://localhost:3000/availability/69f22e3a0939c2872bf58e0f/2026-04-30
 
 */
 
+
 /*
 POST
 BOOK APPOINTMENT
@@ -123,6 +126,7 @@ http://localhost:3000/appointment/69f22e3a0939c2872bf58e0f
 }
 
 */
+
 
 
 
@@ -142,5 +146,57 @@ Check Availability
 Book Appointment
    ↓
 Cancel Appointment
+
+*/
+
+
+
+// deployed on render.com
+
+/*
+POST
+https://authdoctor.onrender.com/auth/register
+{
+  "name": "imran",
+  "email": "test123@gmail.com",
+  "password": "123456"
+}
+
+
+LOGIN
+POST
+https://authdoctor.onrender.com/auth/login
+
+{
+  "email": "test123@gmail.com",
+  "password": "123456"
+}
+
+
+create doctor
+POST
+https://authdoctor.onrender.com/doctor
+
+{
+  "name": "Dr heeba",
+  "specialization": "Dermatology",
+  "startTime": "09:00",
+  "endTime": "10:00",
+  "slotDuration": 30,
+  "slotCapacity": 4
+}
+
+GET ALL DOCTORS
+GET
+https://authdoctor.onrender.com/doctor
+
+shown
+[{"_id":"69f9f18935fba92e74cbf550","name":"Dr heeba","specialization":"Dermatology","availableDays":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"startTime":"09:00","endTime":"10:00","slotDuration":30,"__v":0}]
+
+GET DOCTOR BY ID
+GET
+https://authdoctor.onrender.com/doctor/69f9f18935fba92e74cbf550
+{"_id":"69f9f18935fba92e74cbf550","name":"Dr heeba","specialization":"Dermatology","availableDays":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"startTime":"09:00","endTime":"10:00","slotDuration":30,"__v":0}
+
 
 */
