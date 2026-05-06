@@ -9,7 +9,7 @@ const {
 
 
 // create appointment
-router.post("/:doctorId", createAppointment);
+router.post("/:doctorId/:date", createAppointment);;
 
 
 // cancel appointment

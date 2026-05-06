@@ -5,96 +5,57 @@ const generateSlots = require("../utils/slotGenerator");
 // create appointment
 exports.createAppointment = async (req, res) => {
   try {
-    const { doctorId } = req.params;
-
+    const { doctorId, date } = req.params;
     const { patientName, patientPhone, reason } = req.body;
 
-    // find doctor
     const doctor = await Doctor.findById(doctorId);
 
     if (!doctor) {
-      return res.json({
-        message: "Doctor not found",
-      });
+      return res.json({ message: "Doctor not found" });
     }
 
-    // today's date
-    let currentDate = new Date();
+    const allSlots = generateSlots(
+      doctor.startTime,
+      doctor.endTime,
+      doctor.slotDuration
+    );
 
-    // next 14 days
-    const maxDays = 14;
+    for (const slot of allSlots) {
 
-    // check dates
-    for (let i = 0; i < maxDays; i++) {
-
-      // convert date
-      const dateString = currentDate.toISOString().split("T")[0];
-
-      // get day name
-      const dayName = currentDate.toLocaleDateString("en-US", {
-        weekday: "long",
+      const bookedCount = await Appointment.countDocuments({
+        doctorId,
+        date,
+        slot,
+        status: "Booked",
       });
 
-      // skip sunday
-      if (dayName === "Sunday") {
-        currentDate.setDate(currentDate.getDate() + 1);
-        continue;
-      }
+      if (bookedCount < doctor.slotCapacity) {
 
-      // generate all slots
-      const allSlots = generateSlots(
-        doctor.startTime,
-        doctor.endTime,
-        doctor.slotDuration
-      );
-
-      // check every slot
-      for (const slot of allSlots) {
-
-        // count already booked patients in this slot
-        const bookedCount = await Appointment.countDocuments({
+        const appointment = new Appointment({
+          patientName,
+          patientPhone,
+          reason,
           doctorId,
-          date: dateString,
+          date,
           slot,
           status: "Booked",
         });
 
-        // if slot available
-        if (bookedCount < doctor.slotCapacity) {
+        await appointment.save();
 
-          // create appointment
-          const appointment = new Appointment({
-            patientName,
-            patientPhone,
-            reason,
-            doctorId,
-            date: dateString,
-            slot,
-            status: "Booked",
-          });
-
-          await appointment.save();
-
-          return res.json({
-            message: "Appointment booked successfully",
-            appointment,
-          });
-        }
+        return res.json({
+          message: "Appointment booked successfully",
+          appointment,
+        });
       }
-
-      // move next day
-      currentDate.setDate(currentDate.getDate() + 1);
     }
 
-    // no slots available
     res.json({
-      message: "No slots available for next 14 days",
+      message: "No slots available for selected date",
     });
 
   } catch (err) {
-    res.json({
-      error: err.message,
-    });
+    res.json({ error: err.message });
   }
 };
 

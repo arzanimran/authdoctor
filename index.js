@@ -154,6 +154,8 @@ Cancel Appointment
 // deployed on render.com
 
 /*
+https://authdoctor.onrender.com
+
 POST
 https://authdoctor.onrender.com/auth/register
 {
@@ -197,5 +199,28 @@ GET DOCTOR BY ID
 GET
 https://authdoctor.onrender.com/doctor/69f9f18935fba92e74cbf550
 
+AVAILABILITY
+GET
+ https://authdoctor.onrender.com/availability/69f9f18935fba92e74cbf550/2026-05-05
+
+ shown
+ {"doctor":"Dr heeba","specialization":"Dermatology","date":"2026-05-05","slots":[{"slot":"09:00","capacity":4,"booked":0,"remaining":4,"full":false},{"slot":"09:30","capacity":4,"booked":0,"remaining":4,"full":false}]}
+
+
+BOOK APPOINTMENT
+POST
+https://authdoctor.onrender.com/appointment/69f9f18935fba92e74cbf550
+
+{
+  "patientName": "imran",
+  "patientPhone": "9876543210",
+  "reason": "sick"
+}
+
+
+CANCEL APPOINTMENT
+PUT
+https://authdoctor.onrender.com/appointment/cancel/69f9fe910a703d658039cd55
+{"message":"Appointment cancelled successfully","appointment":{"_id":"69f9fe910a703d658039cd55","patientPhone":"9876543210","patientName":"imran","reason":"sick","doctorId":"69f9f18935fba92e74cbf550","date":"2026-05-05","slot":"09:00","status":"Cancelled","__v":0}}
 
 */
