@@ -185,3 +185,30 @@ exports.createAppointment = async (req, res) => {
     });
   }
 };
+
+exports.cancelAppointment = async (req, res) => {
+  try {
+
+    const appointment = await Appointment.findById(req.params.id);
+
+    if (!appointment) {
+      return res.json({
+        message: "Appointment not found",
+      });
+    }
+
+    appointment.status = "Cancelled";
+
+    await appointment.save();
+
+    res.json({
+      message: "Appointment cancelled successfully",
+      appointment,
+    });
+
+  } catch (err) {
+    res.json({
+      error: err.message,
+    });
+  }
+};
