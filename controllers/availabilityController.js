@@ -1,55 +1,7 @@
+
+
+
 /*const Doctor = require("../models/Doctor");
-const Appointment = require("../models/Appointment");
-const generateSlots = require("../utils/slotGenerator");
-
-// get available slots for a doctor on a specific date
-exports.getAvailableSlots = async (req, res) => { //this function will handle API request for available slots
-  try {
-    const { doctorId, date } = req.params;// get doctor id and date from request parameters
-
-    // find doctor
-    const doctor = await Doctor.findById(doctorId);// find doctor in database using doctor id
-
-    if (!doctor) {
-      return res.json({ message: "Doctor not found" });
-    }
-
-    // generate all slots
-    const allSlots = generateSlots(
-      doctor.startTime,
-      doctor.endTime,
-      doctor.slotDuration
-    );// generate all possible slots for the doctor based on start time, end time and slot duration
-
-    // get booked appointments
-    const booked = await Appointment.find({
-      doctorId,
-      date,
-      status: "Booked",
-    });
-
-    const bookedSlots = booked.map((a) => a.slot);
-
-    // remove booked slots
-    const availableSlots = allSlots.filter(
-      (slot) => !bookedSlots.includes(slot)
-    );
-
-    res.json({
-      doctor: doctor.name,
-      date,
-      totalSlots: allSlots.length,
-      bookedSlots: bookedSlots.length,
-      availableSlots,
-    });
-  } catch (err) {
-    res.json({ error: err.message });
-  }
-};
-*/
-
-
-const Doctor = require("../models/Doctor");
 const Appointment = require("../models/Appointment");
 const generateSlots = require("../utils/slotGenerator");
 
@@ -103,6 +55,98 @@ exports.getAvailableSlots = async (req, res) => {
       doctor: doctor.name,
       specialization: doctor.specialization,
       date,
+      slots,
+    });
+
+  } catch (err) {
+    res.json({
+      error: err.message,
+    });
+  }
+};
+*/
+
+const Appointment = require("../models/Appointment");
+const Doctor = require("../models/Doctor");
+const Wave = require("../models/Wave");
+
+const generateSlots = require("../utils/slotGenerator");
+
+exports.getAvailableSlots = async (req, res) => {
+  try {
+
+    const { doctorId, date } = req.params;
+
+    const doctor = await Doctor.findById(doctorId);
+
+    if (!doctor) {
+      return res.json({
+        message: "Doctor not found",
+      });
+    }
+
+    // get weekday name
+    const dayName = new Date(date).toLocaleDateString("en-US", {
+      weekday: "long",
+    });
+
+    // 1️⃣ FIRST CHECK NON-RECURRING
+    let wave = await Wave.findOne({
+      doctorId,
+      type: "non-recurring",
+      date,
+    });
+
+    // 2️⃣ IF NOT FOUND → CHECK RECURRING
+    if (!wave) {
+
+      wave = await Wave.findOne({
+        doctorId,
+        type: "recurring",
+        days: dayName,
+      });
+    }
+
+    if (!wave) {
+      return res.json({
+        message: "No wave available",
+      });
+    }
+
+    // generate slots
+    const allSlots = generateSlots(
+      wave.startTime,
+      wave.endTime,
+      wave.duration
+    );
+
+    // booked appointments
+    const bookedAppointments = await Appointment.find({
+      doctorId,
+      date,
+      status: "Booked",
+    });
+
+    // prepare slots
+    const slots = allSlots.map((slot) => {
+
+      const bookedCount = bookedAppointments.filter(
+        (appointment) => appointment.slot === slot
+      ).length;
+
+      return {
+        slot,
+        capacity: wave.maxPatients,
+        booked: bookedCount,
+        remaining: wave.maxPatients - bookedCount,
+        full: bookedCount >= wave.maxPatients,
+      };
+    });
+
+    res.json({
+      doctor: doctor.name,
+      date,
+      waveType: wave.type,
       slots,
     });
 

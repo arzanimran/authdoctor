@@ -21,6 +21,9 @@ app.use("/availability", require("./routes/availabilityRoutes"));
 // appointment routes
 app.use("/appointment", require("./routes/appointmentRoutes"));
 
+// wave routes
+app.use("/wave", require("./routes/waveRoutes"));
+
 // MongoDB connection
 mongoose
   .connect(process.env.MONGO_URL)
@@ -163,7 +166,7 @@ https://authdoctor.onrender.com/auth/register
   "email": "test123@gmail.com",
   "password": "123456"
 }
-
+-----------------------------------------------------------------------------------------------------------------------
 
 LOGIN
 POST
@@ -174,7 +177,7 @@ https://authdoctor.onrender.com/auth/login
   "password": "123456"
 }
 
-
+------------------------------------------------------------------------------------------------------------------------
 create doctor
 POST
 https://authdoctor.onrender.com/doctor
@@ -188,17 +191,20 @@ https://authdoctor.onrender.com/doctor
   "slotCapacity": 4
 }
 
+-----------------------------------------------------------------------------------------------------------------------
 GET ALL DOCTORS
 GET
 https://authdoctor.onrender.com/doctor
 
 shown
 [{"_id":"69f9f18935fba92e74cbf550","name":"Dr heeba","specialization":"Dermatology","availableDays":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"startTime":"09:00","endTime":"10:00","slotDuration":30,"__v":0}]
+------------------------------------------------------------------------------------------------------------------------
 
 GET DOCTOR BY ID
 GET
 https://authdoctor.onrender.com/doctor/69f9f18935fba92e74cbf550
 
+------------------------------------------------------------------------------------------------------------------------
 AVAILABILITY
 GET
  https://authdoctor.onrender.com/availability/69f9f18935fba92e74cbf550/2026-05-05
@@ -206,17 +212,20 @@ GET
  shown
  {"doctor":"Dr heeba","specialization":"Dermatology","date":"2026-05-05","slots":[{"slot":"09:00","capacity":4,"booked":0,"remaining":4,"full":false},{"slot":"09:30","capacity":4,"booked":0,"remaining":4,"full":false}]}
 
+------------------------------------------------------------------------------------------------------------------------
 
 BOOK APPOINTMENT
 POST
-https://authdoctor.onrender.com/appointment/69f9f18935fba92e74cbf550
-
+https://authdoctor.onrender.com/appointment/69f9f18935fba92e74cbf550/2026-05-07
 {
   "patientName": "imran",
   "patientPhone": "9876543210",
   "reason": "sick"
 }
 
+{"message":"Appointment booked successfully","appointment":{"patientPhone":"9876543210","patientName":"imran","reason":"sick","doctorId":"69f9f18935fba92e74cbf550","date":"2026-05-07","slot":"09:00","status":"Booked","_id":"69fad22ccfaf6cb033c27d5a","__v":0}}
+
+-----------------------------------------------------------------------------------------------------------------------
 
 CANCEL APPOINTMENT
 PUT
